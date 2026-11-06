@@ -28,6 +28,18 @@ The Mac Pro fan daemon and its control API are maintained in [neofand](https://g
 
 Reboot/boot-selection controls are separate from monitoring and disabled unless configured. Keep them disabled unless necessary. Authorized callers must include `X-Neofand-Control: 1`; browser requests also require a matching origin. Dashboard proxies expose GET-only API routes. Request concurrency, body/header size, deadlines and database work are bounded. The native daemon performs hardware control and should not be deployed as an internet service.
 
+## Optional release management
+
+The Updates page is the sole narrow write exception to the monitoring API. It
+connects to a dedicated unprivileged Unix-socket settings agent, mounted read-only
+into the frontend. Mutations require a separate admin key/session and exact
+browser origin. It cannot select commands, paths, repositories or services.
+A separate root-owned worker installs publisher-controlled stable releases only
+after administrator opt-in (off by default). This worker is trusted host
+administration code; it has Docker/Proxmox privileges and is not a read-only
+sandbox. Checksum verification is not an independent release signature. See
+[UPDATES.md](docs/UPDATES.md) for setup, trust, persistence and recovery.
+
 ## Reporting a vulnerability
 
 Use GitHub's **private vulnerability reporting / Report a vulnerability** for this repository when available. If unavailable, open an issue asking for a private contact channel without including exploit details, secrets, addresses or logs. Include the affected commit, deployment type and a minimal synthetic reproduction through the private channel. Never test against systems you do not own.

@@ -103,3 +103,10 @@ applicable license notices are retained; see [provenance](docs/REPOSITORY-SPLIT.
 ## Security
 
 Read [SECURITY.md](SECURITY.md) before deploying. Dashboard containers require only read-only generated telemetry, not host devices or administrative sockets. New LXC templates are private by default. See the [November 2026 review](docs/security-review-2026-11.md) for fixes, verification and remaining boundaries.
+
+### Release updates
+
+The [Updates page](docs/UPDATES.md) provides a per-host automatic-update switch,
+release status and an admin unlock. Automatic updates are off by default. A
+separate host worker verifies stable release downloads and rolls back failed
+application health checks without exposing Docker or host administration to the UI.

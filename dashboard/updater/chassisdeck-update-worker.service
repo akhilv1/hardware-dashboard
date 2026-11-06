@@ -1,0 +1,13 @@
+[Unit]
+Description=ChassisDeck trusted host release installer
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 -B /opt/chassisdeck-updater/update_worker.py
+UMask=0022
+PrivateTmp=true
+TimeoutStartSec=45min
+MemoryMax=1G
+TasksMax=128
+Nice=10
