@@ -54,6 +54,10 @@ Bare-metal Docker hosts also have a **Portainer** page with container state, hea
 - **Events:** host warnings and restart history; telemetry gaps alone do not
   establish a power outage.
 
+## Releases
+
+Use a tagged [ChassisDeck release](https://github.com/akhilv1/hardware-dashboard/releases) for deployed systems. Bundles include the shared UI, platform APIs and host collectors, SHA256 checksums, installation profiles and rollback support. See [release updates](docs/RELEASES.md). Fan control remains a separately installed neofand service.
+
 ## Get started
 
 ```sh

@@ -80,11 +80,17 @@
     // Old deployments omitted repository and still refer to original daemon commits.
     const repository = typeof build.repository === 'string' && /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(build.repository)
       ? build.repository : 'akhilv1/neofand';
+    if (typeof build.version === 'string' && /^v[0-9]+\.[0-9]+\.[0-9]+(?:-[a-zA-Z0-9.-]+)?$/.test(build.version)) {
+      const release = document.createElement('a');
+      release.href = `https://github.com/${repository}/releases/tag/${encodeURIComponent(build.version)}`;
+      release.textContent = build.version; release.target = '_blank'; release.rel = 'noopener noreferrer';
+      label.replaceChildren(release, document.createTextNode(' · '));
+    }
     link.href = `https://github.com/${repository}/commit/${encodeURIComponent(build.commit)}`;
     link.textContent = String(build.commit).slice(0,7);
     link.target = '_blank'; link.rel = 'noopener noreferrer';
     host.replaceChildren(label, link);
-    document.getElementById('runtime-branch').textContent = build.branch || '';
+    document.getElementById('runtime-branch').textContent = build.version ? 'ChassisDeck release' : build.branch || '';
   }).catch(() => { document.getElementById('runtime-build').textContent = 'Build information unavailable'; });
   if (state.latest.length) sampleReceived(state.latest);
   schedule();
