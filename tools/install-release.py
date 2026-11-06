@@ -107,7 +107,7 @@ def restore(backup,destination):
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--destination',required=True)
     parser.add_argument('--bundle',default=str(Path(__file__).resolve().parent))
-    parser.add_argument('--profile',choices=['macpro','linux','p620','lxc','proxmox-host'])
+    parser.add_argument('--profile',choices=['macpro','linux','p620','lxc','proxmox-host','updater'])
     parser.add_argument('--backup-root');parser.add_argument('--restore')
     args=parser.parse_args()
     if args.restore:restore(args.restore,args.destination)
