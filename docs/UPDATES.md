@@ -72,12 +72,15 @@ sudo cat /etc/chassisdeck-updater/admin-token
 
 Mount **only** `/var/lib/chassisdeck-update-api/run` read-only into the frontend
 at `/run/chassisdeck-updates`. Docker: add this bind to the dashboard service's
-`volumes`, then recreate only that service. Proxmox: add a read-only bind mount
-using an unused `mpN`, then restart only the dashboard LXC if required. Never
+`volumes`, then recreate only that service. Proxmox: mount that same host directory at `/opt/chassisdeck-updates-socket`
+inside the LXC, using an unused read-only `mpN`, then restart only the dashboard
+LXC. Do not use `/run` inside a systemd LXC: its boot-time temporary filesystem
+can hide the mount. Verify that `control.sock` remains visible after a reboot. Never
 mount the settings directory, key directory, Docker socket, or host root.
 
 Current Caddy templates include the narrow `/api/updates` proxy to
-`unix//run/chassisdeck-updates/control.sock`. Older deployments must add that
+`unix//run/chassisdeck-updates/control.sock` for Docker and
+`unix//opt/chassisdeck-updates-socket/control.sock` for LXC. Older deployments must add that
 specific matcher before the generic GET-only API handler and validate/reload
 Caddy. Without the optional host agent/socket, the page reports Unavailable.
 Other API writes remain blocked.

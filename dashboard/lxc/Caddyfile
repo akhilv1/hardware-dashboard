@@ -18,7 +18,7 @@
     handle_path /hardware/* {
         @updates path /api/updates /api/updates/*
         handle @updates {
-            reverse_proxy unix//run/chassisdeck-updates/control.sock
+            reverse_proxy unix//opt/chassisdeck-updates-socket/control.sock
         }
         @apiGet {
             path /api/*
