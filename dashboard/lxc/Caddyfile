@@ -16,6 +16,10 @@
     redir / /hardware/ 302
     redir /hardware /hardware/ 308
     handle_path /hardware/* {
+        @updates path /api/updates /api/updates/*
+        handle @updates {
+            reverse_proxy unix//run/chassisdeck-updates/control.sock
+        }
         @apiGet {
             path /api/*
             method GET

@@ -1,0 +1,36 @@
+[Unit]
+Description=ChassisDeck authenticated update settings
+After=local-fs.target
+[Service]
+User=chassisdeck-updates
+Group=chassisdeck-updates
+ExecStart=/usr/bin/python3 -B /opt/chassisdeck-updater/update_api.py
+Restart=on-failure
+UMask=0022
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/chassisdeck-update-api
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+RestrictRealtime=true
+LockPersonality=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_UNIX
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources
+TasksMax=16
+MemoryMax=96M
+CPUQuota=25%
+LimitNOFILE=64
+[Install]
+WantedBy=multi-user.target

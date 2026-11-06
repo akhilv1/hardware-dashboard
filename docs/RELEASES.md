@@ -90,3 +90,9 @@ Tag that exact commit and publish the generated archive, `SHA256SUMS` and
 `release.json`. Do not retarget a published tag or silently replace release
 assets. Publish a new version for changes. The footer links to the ChassisDeck
 release and commit; legacy build metadata continues to link to neofand.
+
+## Automatic updates
+
+The optional [Updates page and host agent](UPDATES.md) can install future stable
+releases after administrator opt-in. First installation and changes to deployment
+configuration remain explicit host-administrator tasks.

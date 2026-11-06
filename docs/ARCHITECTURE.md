@@ -39,3 +39,8 @@ stale data rather than substituting zero or treating HTTP success as freshness.
 See SECURITY.md for host privilege, data disclosure and ingress boundaries.
 Docker socket access belongs only to a trusted host collector, never the web
 container. Existing root Proxmox collectors remain trusted administrative code.
+
+The optional [update agent](UPDATES.md) adds an authenticated settings-only Unix
+socket and a separate trusted host release worker. This is the sole write
+exception to the GET-only monitoring proxies; the web container still receives
+no Docker socket, host shell, device access or root credentials.

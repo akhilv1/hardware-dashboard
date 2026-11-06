@@ -54,8 +54,13 @@ def build(version, output):
         p620={**linux,'assets/gpu-library/index.html':'p620/gpu-library.html'}
         lxc={**{'www/'+key:value for key,value in assets.items()},'www/index.html':'linux/index.html','linux_api.py':'scripts/linux_api.py'}
         host=mapping(('linux_telemetry.py','system_events.py','storage_collect.py','storage_topology.py','proxmox_collect.py','export_history.py'))
+        (payload/'updater').mkdir()
+        updater={}
+        for name in ('update_api.py','update_worker.py'):
+            shutil.copyfile(ROOT/'dashboard/updater'/name,payload/'updater'/name)
+            updater[name]='updater/'+name
         hashes={str(p.relative_to(payload)):hashlib.sha256(p.read_bytes()).hexdigest() for p in payload.rglob('*') if p.is_file()}
-        manifest={**metadata,'files':hashes,'profiles':dict(macpro=mac,linux=linux,p620=p620,lxc=lxc,**{'proxmox-host':host})}
+        manifest={**metadata,'files':hashes,'profiles':dict(updater=updater,macpro=mac,linux=linux,p620=p620,lxc=lxc,**{'proxmox-host':host})}
         (stage/'RELEASE.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
         shutil.copyfile(ROOT/'tools/install-release.py',stage/'install-release.py')
         shutil.copyfile(ROOT/'docs/RELEASES.md',stage/'README.md')
