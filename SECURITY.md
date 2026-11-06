@@ -1,6 +1,6 @@
 # Security model and reporting
 
-Hardware Dashboard monitors real hardware. Treat the dashboard, telemetry archives and collector code as sensitive administrative software. A review and regression tests reduce risk; they are not a guarantee of isolation or an independent penetration-test certification.
+ChassisDeck monitors real hardware. Treat the dashboard, telemetry archives and collector code as sensitive administrative software. A review and regression tests reduce risk; they are not a guarantee of isolation or an independent penetration-test certification.
 
 ## Supported deployment boundary
 

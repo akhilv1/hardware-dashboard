@@ -1,8 +1,16 @@
-# Hardware Dashboard
+# ChassisDeck
+
+**Your hardware’s control panel, in a container.**
 
 Multiplatform hardware monitoring for Linux workstations and Proxmox hosts.
 Live dashboards bring together temperatures, CPU/GPU load, memory pressure,
 fan speeds, power, storage usage and system events.
+
+Born from the neofand control panel, ChassisDeck brings BMC-inspired hardware
+visibility to ordinary Linux hosts. It is an **in-band** console: the host OS
+and collectors must be running. It does not provide independent out-of-band
+power control, remote KVM, or firmware management. The current application is
+read-only; privileged controls remain separate.
 
 ## Choose your setup
 

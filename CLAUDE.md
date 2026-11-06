@@ -1,4 +1,4 @@
-# Hardware Dashboard
+# ChassisDeck
 
 This repository owns the multiplatform monitoring UI, read-only APIs, host
 collectors, GPU builder, and Docker/LXC packaging. Mac Pro fan control belongs

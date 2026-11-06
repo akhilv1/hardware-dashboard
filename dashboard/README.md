@@ -1,4 +1,4 @@
-# Hardware Dashboard deployment
+# ChassisDeck deployment
 
 Source: https://github.com/akhilv1/hardware-dashboard
 
