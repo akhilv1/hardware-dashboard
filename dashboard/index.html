@@ -1470,6 +1470,12 @@ async function refresh() {
   try {
     if (state.tab === "updates") {
       await window.chassisDeckUpdatesRefresh?.();
+      try {
+        [state.metrics, state.latest] = await Promise.all([getJSON("/hardware/api/metrics"), getJSON("/hardware/api/latest")]);
+        window.neofandRuntime?.sample(state.latest);
+        renderSummary();
+        applyVisibility();
+      } catch (_) { /* Update settings remain usable when telemetry is unavailable. */ }
       $("status").textContent = "Updates · stable channel";
       return;
     }
