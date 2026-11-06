@@ -77,7 +77,10 @@
     const label = document.createElement('span');
     label.textContent = build.pr_number ? `PR #${build.pr_number} · ` : 'Branch build · ';
     const link = document.createElement('a');
-    link.href = `https://github.com/akhilv1/neofand/commit/${encodeURIComponent(build.commit)}`;
+    // Old deployments omitted repository and still refer to original daemon commits.
+    const repository = typeof build.repository === 'string' && /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(build.repository)
+      ? build.repository : 'akhilv1/neofand';
+    link.href = `https://github.com/${repository}/commit/${encodeURIComponent(build.commit)}`;
     link.textContent = String(build.commit).slice(0,7);
     link.target = '_blank'; link.rel = 'noopener noreferrer';
     host.replaceChildren(label, link);

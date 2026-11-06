@@ -4,7 +4,7 @@ Ubuntu 24.04 amd64 system-container template, based on Proxmox's official signed
 
 ## Install
 
-1. Download the `.tar.zst` and matching `.sha256` from the private hardware downloads page. On the Proxmox host, place them in `/var/lib/vz/template/cache/`, then run `sha256sum -c IMAGE.tar.zst.sha256`.
+1. Build the `.tar.zst` and matching `.sha256` using the Build section below, or use matching artifacts from a trusted project release. No prebuilt release is implied by this repository split. On the Proxmox host, place them in `/var/lib/vz/template/cache/`, then run `sha256sum -c IMAGE.tar.zst.sha256`.
 2. Create an **unprivileged** container from the template using the Proxmox GUI. Suggested resources: 1 core, 512 MiB RAM, 2 GiB root disk, DHCP on your private management bridge. SSH is disabled by default; use the Proxmox console. If required, install your SSH public key and explicitly enable SSH only on your private management network. No nesting or GPU passthrough required.
 3. Install the separately packaged `host-collector.tar.gz` on the **physical Proxmox host**: extract it, inspect `install-host-collector.sh`, then run it as root. It installs a dedicated unprivileged sampler user and three read-only collectors; it does not install GPU drivers or change cooling.
 4. While the container is stopped, bind only the output directory read-only. Replace `120` with your unused CT ID:
@@ -46,6 +46,8 @@ An LXC's `/proc` and cgroup readings describe its limits, not necessarily the ph
 - Build checks cover packages, native services, API behavior and rootfs identity cleanup. Deployment checks must verify `pct` boot, networking and service health on the target node; the download manifest records the verified deployment.
 
 ## Build
+
+Clone `https://github.com/akhilv1/hardware-dashboard.git` and pass that checkout as `REPOSITORY_ROOT`. The builder requires no daemon checkout. `SOURCE_REPOSITORY` defaults to `akhilv1/hardware-dashboard` and is recorded in build metadata.
 
 Run `build-lxc.sh REPOSITORY_ROOT OUTPUT_DIRECTORY` on an amd64 Linux builder with Docker, Python 3, curl, zstd and gpgv. It verifies Proxmox's catalog signature and the Ubuntu template SHA512, builds the native service image, exports a rootfs archive, and writes SHA256, build metadata and the host collector package. Docker is only a build tool. No running container or host telemetry is exported. Package versions and source commit are recorded in the image.
 

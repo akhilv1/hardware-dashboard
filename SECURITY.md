@@ -1,6 +1,6 @@
 # Security model and reporting
 
-NeoFand monitors real hardware. Treat the dashboard, telemetry archives and collector code as sensitive administrative software. A review and regression tests reduce risk; they are not a guarantee of isolation or an independent penetration-test certification.
+Hardware Dashboard monitors real hardware. Treat the dashboard, telemetry archives and collector code as sensitive administrative software. A review and regression tests reduce risk; they are not a guarantee of isolation or an independent penetration-test certification.
 
 ## Supported deployment boundary
 
@@ -22,7 +22,9 @@ General journal message bodies are omitted by default. Timestamps, unit names, s
 
 Archives use mode `0600` in an exporter-owned `0700` per-host directory. Provision a trusted destination that is not group/world writable; a hostile storage server or administrator is outside this boundary. Use `--mount-root` to refuse exports when the expected mount is absent. Live SQLite/WAL databases stay on local disk; central storage receives consistent archive exports. Back up host bind-mount data separately from LXC rootfs backups.
 
-## Native control API
+## Separate native control API
+
+The Mac Pro fan daemon and its control API are maintained in [neofand](https://github.com/akhilv1/neofand). They are not built or installed by this application repository.
 
 Reboot/boot-selection controls are separate from monitoring and disabled unless configured. Keep them disabled unless necessary. Authorized callers must include `X-Neofand-Control: 1`; browser requests also require a matching origin. Dashboard proxies expose GET-only API routes. Request concurrency, body/header size, deadlines and database work are bounded. The native daemon performs hardware control and should not be deployed as an internet service.
 

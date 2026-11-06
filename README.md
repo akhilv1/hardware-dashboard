@@ -1,6 +1,6 @@
-# neofand
+# Hardware Dashboard
 
-Hardware monitoring and per-component fan control for Linux workstations.
+Multiplatform hardware monitoring for Linux workstations and Proxmox hosts.
 Live dashboards bring together temperatures, CPU/GPU load, memory pressure,
 fan speeds, power, storage usage and system events.
 
@@ -8,7 +8,7 @@ fan speeds, power, storage usage and system events.
 
 | Platform | Support | Guide |
 |---|---|---|
-| Mac Pro 7,1 on Linux | Apple SMC fan control, PSU power, cover interlock, NVIDIA/AMD sensors and two-sided chassis diagrams | [Fan daemon](#quick-start-mac-pro) · [Dashboard](dashboard/README.md) |
+| Mac Pro 7,1 on Linux | SMC telemetry via neofand, PSU power, NVIDIA/AMD sensors and two-sided chassis diagrams | [Optional fan daemon](https://github.com/akhilv1/neofand) · [Dashboard](dashboard/README.md) |
 | Linux / ThinkStation P620 | Read-only CPU, RAM/PSI, hwmon and NVIDIA/AMD telemetry, storage and events | [Linux adapter](dashboard/linux/README.md) |
 | Proxmox LXC | Native web/API services with a separate physical-host collector; node, VM/container and task status | [LXC installation](dashboard/lxc/README.md) |
 
@@ -46,42 +46,47 @@ Bare-metal Docker hosts also have a **Portainer** page with container state, hea
 - **Events:** host warnings and restart history; telemetry gaps alone do not
   establish a power outage.
 
-## Quick start: Mac Pro
+## Get started
 
-Requires Linux, Rust 1.75+, root for fan control, and a working fan driver.
-T2 Macs need a compatible patched `applesmc` driver; see the
-[requirements](docs/fan-control.md#requirements).
-
-```bash
-cargo build --release
-sudo install -m 0755 target/release/neofand /usr/local/bin/neofand
-sudo install -m 0644 neofand.service /etc/systemd/system/neofand.service
-sudo install -m 0644 neofand.conf.macpro71 /etc/neofand.conf
-sudo systemctl daemon-reload
-sudo systemctl enable --now neofand
-sudo journalctl -u neofand -b --no-pager
+```sh
+git clone https://github.com/akhilv1/hardware-dashboard.git
+cd hardware-dashboard
 ```
 
-Review the [worked config](neofand.conf.macpro71) and startup log before relying
-on cooling. Tune thresholds for your GPUs, keep the cover interlock enabled,
-and verify each fan’s source. NVIDIA card fan control is opt-in; the optional
-startup power cap defaults to disabled.
+Choose the Linux/Docker, Mac Pro, or Proxmox guide above. These are deployment
+templates: configure the service account, paths, telemetry source and private
+ingress for your host before starting them. The source lives in `dashboard/`;
+there is no Rust build or fan-control daemon required for Linux and Proxmox.
 
-Build with `--features web` to include the daemon’s telemetry store and web
-console. Use the platform guides above for the full hardware dashboard.
+Mac Pro SMC telemetry comes from the separately installed
+[neofand daemon](https://github.com/akhilv1/neofand), built with its `web` feature.
+It owns fan control and raw SMC reads. The dashboard connects through the
+GET-only proxy; it does not probe raw SMC keys or write fan controls.
 
-```bash
-neofand --status  # Read the published snapshot without probing hardware
-```
+Existing `neofand-*` service names, environment variables, data directories and
+the `/hardware/` URL remain supported. Splitting the repositories does not
+require reinstalling or restarting a working deployment.
+
+## Development
+
+The application uses static HTML/CSS/JavaScript and Python host collectors/APIs.
+Run `bash tools/check.sh` with Python 3.10+ and Node.js 18+ to check the dashboard,
+Linux and Proxmox tests, GPU placement logic, resource dials and generated pages.
+No hardware access, Docker socket or Rust checkout is needed for these checks.
+
+See [architecture and compatibility](docs/ARCHITECTURE.md) and
+[repository migration](docs/REPOSITORY-SPLIT.md).
 
 ## Documentation
 
-[Fan configuration and troubleshooting](docs/fan-control.md) ·
-[Mac Pro hardware findings](MACPRO71-FINDINGS.md) ·
+[Optional Mac Pro fan daemon](https://github.com/akhilv1/neofand) ·
+[Mac Pro hardware findings](https://github.com/akhilv1/neofand/blob/master/MACPRO71-FINDINGS.md) ·
 [Dashboard deployment](dashboard/README.md) ·
 [GPU library and builder](dashboard/assets/gpu-library/README.md)
 
-GPL-3.0-or-later. Forked from [T2FanRD](https://github.com/GnomedDev/T2FanRD).
+GPL-3.0-or-later. Extracted from [neofand](https://github.com/akhilv1/neofand),
+a fork of [T2FanRD](https://github.com/GnomedDev/T2FanRD). Original authorship and
+applicable license notices are retained; see [provenance](docs/REPOSITORY-SPLIT.md).
 
 ## Security
 

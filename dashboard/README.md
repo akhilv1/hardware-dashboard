@@ -1,8 +1,10 @@
-# NeoCharge hardware dashboard
+# Hardware Dashboard deployment
 
-Live Sensors view: https://neo-mac-pro.west-scoville.ts.net/hardware/#sensors
+Source: https://github.com/akhilv1/hardware-dashboard
 
-This directory is the source of the separate Portainer `neofand` dashboard stack. It serves a NeoCharge-styled monitoring frontend and proxies read-only requests to the host daemon. The daemon's original embedded console remains in `web/dashboard.html`.
+This guide covers the Mac Pro frontend. Linux and Proxmox use the adjacent platform guides.
+
+This directory is the source of the separate Portainer `neofand` dashboard stack. It serves a NeoCharge-styled monitoring frontend and proxies read-only requests to the host daemon. The daemon's small embedded diagnostic console remains in the separate [neofand repository](https://github.com/akhilv1/neofand/tree/master/web). It is not this application.
 
 ## Files
 
@@ -25,7 +27,7 @@ Each A6000 displays its `gpuN_temp_c`, `gpuN_fan_pct`, and `gpuN_power_w` channe
 
 The reverse panel annotates the memory banks and PSU blower. Host RAM used is `MemTotal - MemAvailable`; free, available, reclaimable cache, and swap usage remain separate readings. Pressure is Linux PSI `some avg10` (the percent of the last ten seconds with at least one task waiting on memory); full-stall pressure is also shown. This is actual host PSI, not a color inferred from RAM utilization. See https://docs.kernel.org/accounting/psi.html. Both chassis image elements have identical dimensions.
 
-The fan map follows the measured roles in `MACPRO71-FINDINGS.md`: fan 1 is the PSU, fan 4 is CPU cooling, and fans 2 and 3 serve the GPU bay. The latter two have not been distinguished individually, so their annotation shows a shared cooling zone. All image anchor positions are approximate.
+The fan map follows the measured roles in [the daemon hardware findings](https://github.com/akhilv1/neofand/blob/master/MACPRO71-FINDINGS.md): fan 1 is the PSU, fan 4 is CPU cooling, and fans 2 and 3 serve the GPU bay. The latter two have not been distinguished individually, so their annotation shows a shared cooling zone. All image anchor positions are approximate.
 
 The GPU callouts are arranged top to bottom as GPU 2, GPU 0, GPU 1 based on PCI ancestry and firmware slot labels observed on the server: `fc:00.0` / Slot 5, `0d:00.0` / Slot 4, and `0f:00.0` / Slot 3. Recheck this map after moving cards or changing GPU enumeration. Raster placement is illustrative.
 
@@ -41,7 +43,7 @@ The deployed source directory is `/home/neo/services/neofand-dashboard`. Portain
 
 The page is static and has no build step. Check JavaScript syntax with `node --check assets/sensor-diagram.js`, then verify both live panels, changing values, utilization bars, host memory, equal image dimensions, and the reading-card layout on narrow screens. The memory companion has its own health check; its failure leaves the daemon callouts updating and marks the memory readings unavailable.
 
-After committing the source, write deployment-only `assets/build-info.json` with the full source commit, branch, and an optional PR number. Example: `{"commit":"<full SHA>","branch":"codex/sensor-callouts","pr_number":null}`. Do not commit this generated file or invent a PR number. With no PR, the footer labels the deployment as a branch build. Recreate the dashboard container after replacing its bind-mounted `index.html` so it sees the new inode.
+After committing the source, write deployment-only `assets/build-info.json` with the full source commit, repository, branch, and an optional PR number. From the repository root, use `python3 tools/write-build-info.py DEST/assets/build-info.json`. Example: `{"repository":"akhilv1/hardware-dashboard","commit":"<full SHA>","branch":"codex/sensor-callouts","pr_number":null}`. Do not commit this generated file or invent a PR number. With no PR, the footer labels the deployment as a branch build. Recreate the dashboard container after replacing its bind-mounted `index.html` so it sees the new inode.
 
 The GPU library currently contains 63 board profiles and 126 SVG projections. Published dimensions determine each envelope; unpublished cooler thickness uses a labeled nominal slot envelope. Apple MPX templates remain explicitly uncalibrated until mechanical dimensions are available. They are not used for dimensional fit claims. The generated 3D preview is an illustration, not a mechanically verified 3D mesh.
 

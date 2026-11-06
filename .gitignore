@@ -1,9 +1,17 @@
-target
-*.conf
-# ...but the worked MacPro7,1 example is documentation, not local state.
-!neofand.conf.macpro71
+__pycache__/
+*.py[cod]
+.DS_Store
+._*
+.venv/
+node_modules/
+dashboard/assets/build-info.json
+dashboard/assets/downloads/
+telemetry/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
 *.pid
-*.py
-.vscode
-/result
-Cargo.toml.bak
+.env
+.env.*
+!.env.example
+/dist/

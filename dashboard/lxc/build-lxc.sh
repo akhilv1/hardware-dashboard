@@ -34,10 +34,10 @@ cp -a "$repo/dashboard/assets/." "$work/www/assets/"
 rm -rf "$work/www/assets/downloads"
 cp "$repo/dashboard/linux/"{p620.js,p620.css,proxmox.js} "$work/www/assets/"
 python3 "$repo/dashboard/linux/build_p620.py" "$repo/dashboard/index.html" "$work/www/index.html"
-python3 - "$work/www/assets/build-info.json" "$commit" "${PR_NUMBER:-}" "${SOURCE_BRANCH:-source-archive}" <<'PY'
+python3 - "$work/www/assets/build-info.json" "$commit" "${PR_NUMBER:-}" "${SOURCE_BRANCH:-source-archive}" "${SOURCE_REPOSITORY:-akhilv1/hardware-dashboard}" <<'PY'
 import json,sys,datetime
 from pathlib import Path
-Path(sys.argv[1]).write_text(json.dumps(dict(commit=sys.argv[2],branch=sys.argv[4],pr_number=int(sys.argv[3]) if sys.argv[3] else None,built_at=datetime.datetime.now(datetime.timezone.utc).isoformat())))
+Path(sys.argv[1]).write_text(json.dumps(dict(repository=sys.argv[5],commit=sys.argv[2],branch=sys.argv[4],pr_number=int(sys.argv[3]) if sys.argv[3] else None,built_at=datetime.datetime.now(datetime.timezone.utc).isoformat())))
 PY
 docker pull caddy:2-alpine
 caddy_image=$(docker image inspect caddy:2-alpine --format '{{index .RepoDigests 0}}')
@@ -55,5 +55,5 @@ cp "$repo/SECURITY.md" "$work/host-collector/"
 tar czf "$out/host-collector.tar.gz" -C "$work" host-collector
 (cd "$out" && sha256sum host-collector.tar.gz > host-collector.tar.gz.sha256)
 docker run --rm --entrypoint dpkg-query "$image" -W > "$out/packages-${commit:0:7}.txt"
-printf 'source_commit=%s\nbase=%s\nbase_sha512=%s\ncaddy=%s\nimage=%s\n' "$commit" "$base" "$expected" "$caddy_image" "$image" > "$out/build-${commit:0:7}.txt"
+printf 'source_repository=%s\nsource_commit=%s\nbase=%s\nbase_sha512=%s\ncaddy=%s\nimage=%s\n' "${SOURCE_REPOSITORY:-akhilv1/hardware-dashboard}" "$commit" "$base" "$expected" "$caddy_image" "$image" > "$out/build-${commit:0:7}.txt"
 echo "Built $out/$name"
