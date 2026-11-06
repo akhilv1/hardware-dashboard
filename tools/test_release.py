@@ -3,6 +3,8 @@ import hashlib
 import json
 from pathlib import Path
 import tempfile
+import subprocess
+import sys
 import unittest
 from unittest.mock import patch
 
@@ -60,6 +62,19 @@ class ReleaseTests(unittest.TestCase):
                 with self.assertRaises(OSError):module.install(bundle,dest,'linux',backups)
             self.assertEqual((dest/'index.html').read_text(),'old')
             self.assertFalse((dest/'.chassisdeck-release.json').exists())
+    def test_updater_profile_installs_through_release_cli(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            bundle,dest,backups=self.fixture(Path(tmp))
+            manifest=json.loads((bundle/'RELEASE.json').read_text())
+            manifest['profiles']['updater']={'update_worker.py':'new.txt'}
+            (bundle/'RELEASE.json').write_text(json.dumps(manifest))
+            result=subprocess.run([sys.executable,str(Path(__file__).with_name('install-release.py')),
+                '--bundle',str(bundle),'--profile','updater','--destination',str(dest),
+                '--backup-root',str(backups)],capture_output=True,text=True)
+            self.assertEqual(result.returncode,0,result.stderr)
+            self.assertEqual((dest/'update_worker.py').read_text(),'new')
+            self.assertEqual(json.loads((dest/'.chassisdeck-release.json').read_text())['profile'],'updater')
+            self.assertEqual((dest/'telemetry/data').read_text(),'keep')
     def test_traversal_refused(self):
         with tempfile.TemporaryDirectory() as tmp:
             for path in ('../escape','/absolute'):
