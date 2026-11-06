@@ -33,6 +33,8 @@
       byId('updates-enabled').textContent = 'Unknown';
       byId('updates-toggle').disabled = true;
       byId('updates-check').disabled = true;
+      byId('updates-unlock').hidden = true;
+      byId('updates-lock').hidden = true;
       try {
         const response = await fetch('/hardware/assets/build-info.json', {cache: 'no-store'});
         if (response.ok) byId('updates-current').textContent = (await response.json()).version || 'Development build';
