@@ -1,4 +1,4 @@
-# NeoCharge Hardware: native Proxmox LXC template
+# ChassisDeck: native Proxmox LXC template
 
 Ubuntu 24.04 amd64 system-container template, based on Proxmox's official signed template catalog. Caddy and the Python API run as native systemd services, without Docker, nesting, a privileged LXC, host devices, or the Docker socket. The image starts with no telemetry or credentials. SSH host keys and machine ID are unique per booted instance; root is locked until configured through Proxmox.
 
